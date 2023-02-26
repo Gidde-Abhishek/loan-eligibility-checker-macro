@@ -19,6 +19,8 @@ Sub CheckLoanEligibility()
     Dim CoApplicantCIBIL3 As Integer
     Dim BureauEligibility As String
     Dim EligibilityCheck As String
+    Dim ProductType As String
+    
     
     ' Set up loop
     Dim i As Long
@@ -44,30 +46,31 @@ Sub CheckLoanEligibility()
         CoApplicantCIBIL2 = Range("M" & i).Value
         CoApplicant3Guarantor = Range("N" & i).Value
         CoApplicantCIBIL3 = Range("O" & i).Value
+        ProductType = Range("P" & i).Value
         BureauEligibility = ""
         EligibilityCheck = ""
         
             ' Check loan eligibility
     If LoanAmount >= 500000 And LoanAmount <= 3500000 And _
-        (TotalPropertyValue < 4500000 Or PropertySanctionedPlan = "SECO") And _
+        (TotalPropertyValue < 4500000 Or ProductType = "SECO") And _
         PropertyNALand = "Yes" And _
         PropertyLayoutPlan = "Formal" And _
         (PropertySanctionedPlan = "Collector (Zilla Parishad) (ZP)" Or _
          PropertySanctionedPlan = "Gram Panchayat (GP)" Or _
          PropertySanctionedPlan = "Municipality/Town Planning (TP)") Then
         EligibilityCheck = "Eligible"
-        Range("P" & i).Value = EligibilityCheck
-        Range("P" & i).Interior.Color = RGB(146, 208, 80)
+        Range("Q" & i).Value = EligibilityCheck
+        Range("Q" & i).Interior.Color = RGB(146, 208, 80)
     Else
         EligibilityCheck = "Not Eligible"
-         Range("P" & i).Interior.Color = xlNone
+         Range("Q" & i).Interior.Color = xlNone
         Dim Reason As String
         ' Determine the reason for ineligibility
         If LoanAmount < 500000 Then
             Reason = "Loan amount less than minimum requirement"
         ElseIf LoanAmount > 3500000 Then
             Reason = "Loan amount greater than maximum limit"
-        ElseIf TotalPropertyValue >= 4500000 And PropertySanctionedPlan <> "SECO" Then
+        ElseIf TotalPropertyValue >= 4500000 And ProductType <> "SECO" Then
             Reason = "Total property value exceeds limit and property plan is not SECO"
         ElseIf PropertyNALand <> "Yes" Then
             Reason = "Property is not NA land"
@@ -79,8 +82,8 @@ Sub CheckLoanEligibility()
             Reason = "Property is not sanctioned by eligible authorities"
         End If
         ' Write reason to worksheet
-        Range("R" & i).Value = Reason
-        Range("P" & i).Value = EligibilityCheck
+        Range("S" & i).Value = Reason
+        Range("Q" & i).Value = EligibilityCheck
         
     End If
     
@@ -91,7 +94,7 @@ Sub CheckLoanEligibility()
                 If CoApplicantCIBIL3 > 675 Or CoApplicantCIBIL3 = -1 Then
                     BureauEligibility = "Eligible"
                     ' Write eligibility result to worksheet
-                    Range("Q" & i).Value = BureauEligibility
+                    Range("R" & i).Value = BureauEligibility
                 End If
             End If
         End If
